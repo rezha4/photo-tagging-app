@@ -13,28 +13,39 @@ function Image() {
   };
   return (
     <>
-      <div style={divStyle} className="bg-red-200" hidden={visibility}>
+      <div style={divStyle} className="w-10" hidden={visibility}>
         <div>
-          <button>Waldo</button>
-          <button>Wizard</button>
-          <button>Wolde</button>
-        </div>
-        <div>
-          <button id="x">X</button>
+          <button className="bg-blue-500 hover:bg-blue-400 w-20 m-1">
+            Waldo
+          </button>
+          <button className="bg-blue-500 hover:bg-blue-400 w-20 m-1">
+            Wizard
+          </button>
+          <button
+            className="bg-blue-500 hover:bg-blue-400 w-20 m-1"
+            onClick={() => {
+              console.log("Wolde");
+            }}
+          >
+            Wolde
+          </button>
+          <button
+            className="bg-red-500 hover:bg-red-400 w-20 m-1"
+            onClick={() => {
+              setVisibilty(true);
+            }}
+          >
+            Close
+          </button>
         </div>
       </div>
       <img
         src={image}
         alt=" "
         onClick={(e) => {
-          setXCoordinate(e.clientX);
+          setXCoordinate(e.clientX - 50);
           setYCoordinate(e.clientY);
-          if (visibility === false) {
-            setVisibilty(true);
-          }
-          setVisibilty(false);
-          console.log(e.clientX);
-          console.log(e.clientY);
+          visibility ? setVisibilty(false) : setVisibilty(true);
         }}
       />
     </>
