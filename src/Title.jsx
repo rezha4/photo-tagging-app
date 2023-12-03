@@ -1,8 +1,26 @@
 import wally from "./assets/wally.jpeg";
 import wilma from "./assets/wilma.png";
 import odlaw from "./assets/odlaw.png";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 export default function Title() {
+  const [time, setTime] = useState(0);
+
+  async function getTime() {
+    try {
+      const res = await axios.get("http://localhost:3000/time");
+      setTime(res.data.time);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(() => {
+    const timeInterval = setInterval(getTime, 1000);
+    return () => clearInterval(timeInterval);
+  }, []);
+
   return (
     <>
       <div className="text-center mt-5">
@@ -20,7 +38,7 @@ export default function Title() {
           </div>
         </div>
         <div className="text-center mb-5">
-          <p>Time:</p>
+          <p>Time: {time}</p>
         </div>
       </div>
     </>
