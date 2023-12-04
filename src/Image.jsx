@@ -1,14 +1,31 @@
 import image from "./assets/waldo.jpg";
 import "./index.css";
-import { useState } from "react";
+import { useState, createContext } from "react";
 import axios from "axios";
 import WinnerForm from "./WinnerForm";
+import Title from "./Title.jsx";
+
+export const GameContext = createContext({
+  gameOver: false,
+  gameStart: false,
+  handleGameOver: () => {},
+  handleGameStart: () => {},
+});
 
 function Image() {
   const [visibility, setVisibility] = useState(true);
   const [answerCoordinate, setAnswerCoordinate] = useState({ x: 0, y: 0 });
   const [axis, setAxis] = useState({ x: 0, y: 0 });
   const [gameOver, setGameOver] = useState(false);
+  const [gameStart, setGameStart] = useState(false);
+
+  const handleGameOver = () => {
+    setGameOver(false);
+  };
+
+  const handleGameStart = () => {
+    setGameStart(true);
+  };
 
   const answerBoxStyle = {
     position: "absolute",
@@ -30,7 +47,14 @@ function Image() {
 
   return (
     <>
-    {gameOver && <WinnerForm />}
+      <GameContext.Provider value={{ gameStart, handleGameStart }}>
+        <Title />
+      </GameContext.Provider>
+      {gameOver && (
+        <GameContext.Provider value={{ gameOver, handleGameOver }}>
+          <WinnerForm />
+        </GameContext.Provider>
+      )}
       <div style={answerBoxStyle} className="w-10" hidden={visibility}>
         <div>
           <p className="bg-white hover:bg-gray-100 border w-20 m-1 shadow-2xl text-xs text-center">
@@ -127,7 +151,8 @@ function Image() {
           </button> */}
         </div>
       </div>
-      <img
+      
+      {gameStart && <img
         src={image}
         alt=" "
         className="m-auto w-auto h-[500px] max-w-[800px]"
@@ -162,7 +187,8 @@ function Image() {
           //console.log(`X:${axis.x}, Y:${axis.y}`);
           // console.log(answers);
         }}
-      />
+      />}
+
     </>
   );
 }

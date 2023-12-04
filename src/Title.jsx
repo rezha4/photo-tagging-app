@@ -2,24 +2,29 @@ import wally from "./assets/wally.jpeg";
 import wilma from "./assets/wilma.png";
 import odlaw from "./assets/odlaw.png";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext, useContext } from "react";
+import { GameContext } from "./Image";
 
 export default function Title() {
   const [time, setTime] = useState(0);
-
-  async function getTime() {
-    try {
-      const res = await axios.get("http://localhost:3000/time");
-      setTime(res.data.time);
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  const { gameStart, handleGameStart, gameOver } = useContext(GameContext);
 
   useEffect(() => {
-    const timeInterval = setInterval(getTime, 1000);
-    return () => clearInterval(timeInterval);
-  }, []);
+    let key;
+
+    if (gameStart) {
+      key = setInterval(() => {
+        setTime((time) => time + 1);
+      }, 1000);
+    }
+
+    return () => clearInterval(key);
+  }, [gameStart]);
+
+  const handleClick = () => {
+    handleGameStart();
+    axios.get("http://localhost:3000/start-time");
+  };
 
   return (
     <>
@@ -37,9 +42,13 @@ export default function Title() {
             <img src={odlaw} alt=" " className="w-10 h-10" />
           </div>
         </div>
-        <div className="text-center mb-5">
-          <p>Time: {time}</p>
-        </div>
+        {gameStart && <p>Time: {time}</p>}
+        <button
+          className="m-2 border border-black py-2 px-5"
+          onClick={handleClick}
+        >
+          Start Game
+        </button>
       </div>
     </>
   );
